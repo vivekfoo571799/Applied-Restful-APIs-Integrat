@@ -1,0 +1,32 @@
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.get('/api/course', (req, res) => {
+  const course = [
+    { id: 1, coursename: 'Artificial Intelligence' },
+    { id: 2, coursename: 'Database Administration' },
+    { id: 3, coursename: 'User Experience ' },
+  ];
+  res.send(course);
+});
+
+app.post('/api/course', (req, res) => {
+  // Add new course to database
+  const newcourse = { id: 4, coursename: 'Advanced Computer Networking' };
+  res.send(newcourse);
+});
+
+app.put('/api/course/:id', (req, res) => {
+  const { id } = req.params;
+  // Update course with the given id in the database
+  res.send(`course with id ${id} updated.`);
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});

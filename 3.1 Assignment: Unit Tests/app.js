@@ -11,7 +11,7 @@ mongoose.connect('mongodb://localhost:27017/meanStackTutorial', { useNewUrlParse
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api/items', require('./routes/items'));
+app.use('/api/player', require('./routes/player'));
 
 // Start the server
 const PORT = process.env.PORT || 5000;

@@ -1,0 +1,141 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongodb = require('mongodb');
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+// MongoDB connection
+const MongoClient = mongodb.MongoClient;
+const url = 'mongodb://localhost:27017';
+const dbName = 'Cricket';
+let db;
+
+MongoClient.connect(url, (err, client) => {
+  if (err) {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
+  }
+  console.log('Connected to MongoDB');
+  db = client.db(dbName);
+});
+
+// Add a player
+app.post('/players', (req, res) => {
+  const player = req.body;
+  db.collection('players').insertOne(player, (err, result) => {
+    if (err) {
+      console.error('Failed to add player:', err);
+      res.status(500).json({ error: 'Failed to add player' });
+    } else {
+      res.status(201).json(result.ops[0]);
+    }
+  });
+});
+
+// Update a player
+app.put('/players/:id', (req, res) => {
+  const playerId = req.params.id;
+  const updatedPlayer = req.body;
+  db.collection('players').updateOne(
+    { _id: mongodb.ObjectId(playerId) },
+    { $set: updatedPlayer },
+    (err, result) => {
+      if (err) {
+        console.error('Failed to update player:', err);
+        res.status(500).json({ error: 'Failed to update player' });
+      } else {
+        res.sendStatus(204);
+      }
+    }
+  );
+});
+
+// Delete a player
+app.delete('/players/:id', (req, res) => {
+  const playerId = req.params.id;
+  db.collection('players').deleteOne(
+    { _id: mongodb.ObjectId(playerId) },
+    (err, result) => {
+      if (err) {
+        console.error('Failed to delete player:', err);
+        res.status(500).json({ error: 'Failed to delete player' });
+      } else {
+        res.sendStatus(204);
+      }
+    }
+  );
+});
+
+// Get player with maximum run scored
+app.get('/players/maximum-run-scored', (req, res) => {
+  db.collection('players')
+    .findOne({}, { sort: { runs: -1 } }, (err, player) => {
+      if (err) {
+        console.error('Failed to retrieve player:', err);
+        res.status(500).json({ error: 'Failed to retrieve player' });
+      } else {
+        res.json(player);
+      }
+    });
+});
+
+// Get player with maximum stumpings
+app.get('/players/maximum-stumpings', (req, res) => {
+  db.collection('players')
+    .findOne({}, { sort: { stumpings: -1 } }, (err, player) => {
+      if (err) {
+        console.error('Failed to retrieve player:', err);
+        res.status(500).json({ error: 'Failed to retrieve player' });
+      } else {
+        res.json(player);
+      }
+    });
+});
+
+// Get player with least Number_of_100s 
+app.get('/players/least-Number_of_100s ', (req, res) => {
+  db.collection('players')
+    .findOne({}, { sort: { Number_of_100s: 1 } }, (err, player) => {
+      if (err) {
+        console.error('Failed to retrieve player:', err);
+        res.status(500).json({ error: 'Failed to retrieve player' });
+      } else {
+        res.json(player);
+      }
+    });
+});
+
+// Get players sorted by Highest to lowest runs scored
+app.get('/players/sorted-by-Highest-to-lowest-runs-scored', (req, res) => {
+  db.collection('players')
+    .find()
+    .sort({ runs : -1 })
+    .toArray((err, players) => {
+      if (err) {
+        console.error('Failed to retrieve players:', err);
+        res.status(500).json({ error: 'Failed to retrieve players' });
+      } else {
+        res.json(players);
+      }
+    });
+});
+
+// Get player with maximum number of wickets 
+app.get('/players/maximum-number-of-wickets ', (req, res) => {
+  db.collection('players')
+    .findOne({}, { sort: { wickets: -1 } }, (err, player) => {
+      if (err) {
+        console.error('Failed to retrieve player:', err);
+        res.status(500).json({ error: 'Failed to retrieve player' });
+      } else {
+        res.json(player);
+      }
+    });
+});
+
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
+});

@@ -1,0 +1,18 @@
+<p>player works!</p>
+<div *ngFor="let player of players">
+<p>id: {{ player.id }}</p>
+<h2>{{ player.name }}</h2>
+<p> Runs: {{ player.Runs }}</p>
+<p> Catches: {{ player.Catches }}</p>
+<p> Number_of_100s: {{ player.Number_of_100s }}</p>
+<p> Wickets: {{ player.Wickets}}</p>
+<button (click)="deletePlayer(player)">Delete</button>
+</div>
+<input  #playerid placeholder="id">
+<input #playerName placeholder="name">
+<input  #playerRuns placeholder="Runs">
+<input  #playerCatches placeholder="Catches">
+<input  #playerNumber_of_100s placeholder="Number_of_100s">
+<input  #playerWickets placeholder="Wickets">
+<button (click)="addPlayer(playerid.value,playerName.value, playerRuns.value, playerCatches.value, playerNumber_of_100s.value, playerWickets.value)">Add Player</button>
+
